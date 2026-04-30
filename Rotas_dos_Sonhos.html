@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotas dos Sonhos</title>
+   
+    <!-- Favicon de Bússola -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2399582a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polygon points='16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76'/></svg>">
+
+    <!-- Importando Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+   
+    <!-- Importando Ícones Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Estilos customizados (Animações e Scrollbar) -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+        body { font-family: 'Inter', sans-serif; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+
+        @keyframes scan {
+            0% { top: 10%; }
+            50% { top: 90%; }
+            100% { top: 10%; }
+        }
+        .animate-scan { animation: scan 2s linear infinite; }
+       
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Animações simples do Tailwind */
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-in { animation: zoomIn 0.3s ease-out forwards; }
+       
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="h-screen bg-stone-100 text-stone-800 overflow-hidden">
+
+    <!-- CONTAINER PRINCIPAL -->
+    <div class="w-full h-full bg-[#FAF7F2] relative overflow-hidden flex flex-col">
+       
+        <!-- TELA DE AUTENTICAÇÃO -->
+        <div id="auth-view" class="flex flex-col md:flex-row h-full w-full absolute inset-0 z-50 bg-[#FAF7F2]">
+            <!-- Lado Esquerdo (Banner) -->
+            <div class="bg-[#99582a] pt-16 pb-14 px-8 md:w-2/5 md:h-full rounded-b-3xl md:rounded-none md:rounded-r-[4rem] shadow-2xl relative z-10 text-center flex flex-col items-center md:justify-center">
+                <div class="bg-[#FAF7F2]/10 p-4 rounded-full mb-4 md:mb-8 backdrop-blur-sm border border-[#FAF7F2]/20 shadow-xl">
+                    <i data-lucide="compass" class="w-12 h-12 md:w-20 md:h-20 text-amber-200 animate-[spin_12s_linear_infinite]"></i>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-serif font-bold tracking-wider text-[#FAF7F2] mb-2 flex flex-col gap-1 md:gap-3">
+                    Rotas<span class="text-amber-200 font-light italic text-3xl md:text-4xl">dos Sonhos</span>
+                </h1>
+                <p class="text-[#FAF7F2]/90 text-sm md:text-base mt-2 font-medium tracking-wide max-w-xs">O seu passaporte digital para a essência local.</p>
+            </div>
+
+            <!-- Lado Direito (Formulário) -->
+            <div class="flex-1 px-8 pt-10 pb-6 flex flex-col md:justify-center items-center relative z-20 overflow-y-auto">
+                <div class="w-full max-w-md">
+                    <h2 id="auth-title" class="text-2xl md:text-3xl font-bold text-stone-800 mb-8 text-center">Crie a sua conta</h2>
+                    <form id="auth-form" class="space-y-5">
+                        <div id="name-input-group" class="relative">
+                            <i data-lucide="user" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-stone-400"></i>
+                            <input type="text" id="user-name" placeholder="O seu nome" required class="w-full bg-white border border-stone-200 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-[#99582a]/50 focus:border-[#99582a] transition-all text-sm"/>
+                        </div>
+                        <div class="relative">
+                            <i data-lucide="mail" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-stone-400"></i>
+                            <input type="email" placeholder="E-mail" required class="w-full bg-white border border-stone-200 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-[#99582a]/50 focus:border-[#99582a] transition-all text-sm"/>
+                        </div>
+                        <div class="relative">
+                            <i data-lucide="lock" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-stone-400"></i>
+                            <input type="password" placeholder="Palavra-passe" required class="w-full bg-white border border-stone-200 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-[#99582a]/50 focus:border-[#99582a] transition-all text-sm"/>
+                        </div>
+                        <button type="submit" id="auth-btn-text" class="w-full bg-[#99582a] hover:bg-[#7a4621] text-white font-bold py-4 md:py-5 rounded-2xl mt-8 shadow-lg shadow-[#99582a]/30 transform transition active:scale-95 text-sm uppercase tracking-wider">
+                            Registar e Começar
+                        </button>
+                    </form>
+                    <div class="mt-10 text-center">
+                        <p id="auth-toggle-desc" class="text-sm text-stone-500 mb-2">Já possui o seu passaporte?</p>
+                        <button id="toggle-auth-btn" class="text-sm font-bold text-[#99582a] hover:underline">Faça login aqui</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP PRINCIPAL (Oculto até o login) -->
+        <div id="main-app" class="hidden flex-col md:flex-row h-full w-full relative">
+           
+            <!-- NAVEGAÇÃO (Sidebar no Desktop / Bottom Bar no Mobile) -->
+            <nav class="bg-white border-t md:border-t-0 md:border-r border-stone-200 px-6 md:px-4 py-4 pb-8 md:pb-6 absolute md:relative bottom-0 md:bottom-auto w-full md:w-64 md:h-full rounded-t-3xl md:rounded-none shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 order-last md:order-first flex flex-col shrink-0 transition-all">
+                
+                <!-- Espaçamento no topo para Desktop já que o logo agora fica no header principal -->
+                <div class="hidden md:block h-6 mt-4"></div>
+               
+                <ul class="flex justify-between md:flex-col md:gap-3 items-center md:items-stretch flex-1">
+                    <li><button onclick="navigate('home')" id="nav-home" class="nav-btn flex flex-col md:flex-row items-center md:justify-start gap-1.5 md:gap-3 p-2 md:p-3 md:px-4 md:w-full md:rounded-xl transition-colors text-amber-600 md:bg-amber-50"><i data-lucide="home" class="w-6 h-6"></i><span class="text-[10px] md:text-sm font-medium tracking-wide">Início</span></button></li>
+                    <li><button onclick="navigate('rotas')" id="nav-rotas" class="nav-btn flex flex-col md:flex-row items-center md:justify-start gap-1.5 md:gap-3 p-2 md:p-3 md:px-4 md:w-full md:rounded-xl transition-colors text-stone-400 hover:text-stone-600 hover:bg-stone-50"><i data-lucide="map" class="w-6 h-6"></i><span class="text-[10px] md:text-sm font-medium tracking-wide">Rotas</span></button></li>
+                   
+                    <!-- Botão Scan -->
+                    <li class="relative -top-6 md:top-0 md:mt-auto md:mb-2">
+                        <button onclick="simularCheckIn()" class="bg-amber-600 hover:bg-amber-700 text-white p-4 md:py-3 md:px-4 md:w-full rounded-full md:rounded-xl shadow-lg shadow-amber-600/30 transform transition active:scale-95 flex flex-col md:flex-row items-center md:justify-center gap-2">
+                            <i data-lucide="qr-code" class="w-7 h-7"></i>
+                            <span class="hidden md:inline font-bold text-sm">Ler QR Code</span>
+                        </button>
+                    </li>
+
+                    <li><button onclick="navigate('passaporte')" id="nav-passaporte" class="nav-btn flex flex-col md:flex-row items-center md:justify-start gap-1.5 md:gap-3 p-2 md:p-3 md:px-4 md:w-full md:rounded-xl transition-colors text-stone-400 hover:text-stone-600 hover:bg-stone-50"><i data-lucide="book" class="w-6 h-6"></i><span class="text-[10px] md:text-sm font-medium tracking-wide">Passaporte</span></button></li>
+                    <li><button onclick="navigate('recompensas')" id="nav-recompensas" class="nav-btn flex flex-col md:flex-row items-center md:justify-start gap-1.5 md:gap-3 p-2 md:p-3 md:px-4 md:w-full md:rounded-xl transition-colors text-stone-400 hover:text-stone-600 hover:bg-stone-50"><i data-lucide="gift" class="w-6 h-6"></i><span class="text-[10px] md:text-sm font-medium tracking-wide">Prémios</span></button></li>
+                </ul>
+            </nav>
+
+            <!-- ENVOLVÓRIO DO CONTEÚDO PRINCIPAL -->
+            <div class="flex-1 flex flex-col h-full relative overflow-hidden">
+               
+                <!-- HEADER UNIFICADO (Mobile e Desktop) com o Logótipo Constante -->
+                <header class="pt-12 md:pt-6 pb-4 px-6 md:px-10 bg-[#99582a] text-[#FAF7F2] rounded-b-3xl md:rounded-none shadow-md z-10 shrink-0">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="compass" class="w-8 h-8 text-amber-200 animate-[spin_12s_linear_infinite]"></i>
+                            <div>
+                                <!-- Logótipo Fixo -->
+                                <h1 class="text-2xl font-serif font-bold tracking-wide flex items-baseline gap-1">
+                                    Rotas<span class="text-amber-200 font-light italic text-xl">dos Sonhos</span>
+                                </h1>
+                                <p class="text-[10px] text-[#FAF7F2]/80 mt-0.5 uppercase tracking-widest font-medium">O seu passaporte local</p>
+                            </div>
+                        </div>
+                        <div class="bg-[#7a4621] p-2 rounded-full relative shrink-0 ml-2">
+                            <i data-lucide="award" class="w-6 h-6 text-amber-200"></i>
+                            <span id="badge-count" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">0</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- TOAST NOTIFICATION -->
+                <div id="toast" class="hidden absolute top-28 md:top-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-full shadow-lg z-50 text-sm font-medium flex items-center gap-2 animate-bounce">
+                    <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                    <span id="toast-msg"></span>
+                </div>
+
+                <!-- ÁREA DE CONTEÚDO (Injetado via JS) -->
+                <main id="content-area" class="flex-1 overflow-y-auto pb-24 md:pb-10 relative scrollbar-hide"></main>
+            </div>
+
+            <!-- QR SCANNER OVERLAY -->
+            <div id="scanner-overlay" class="hidden absolute inset-0 bg-black/90 z-50 flex flex-col items-center justify-center text-white">
+                <div class="w-64 h-64 md:w-80 md:h-80 border-4 border-amber-500 border-dashed rounded-3xl animate-pulse flex items-center justify-center relative">
+                    <div class="absolute w-full h-1 bg-amber-500 top-1/2 transform -translate-y-1/2 animate-scan"></div>
+                </div>
+                <p class="mt-8 text-lg font-medium">A ler QR Code do parceiro...</p>
+                <p class="text-sm text-stone-400 mt-2">Valide o seu carimbo digital</p>
+                <button onclick="fecharScanner()" class="mt-10 px-6 py-2 bg-stone-800 rounded-full text-sm font-medium hover:bg-stone-700 transition-colors">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DA APLICAÇÃO -->
+    <script>
+        // ESTADO DA APLICAÇÃO
+        let state = {
+            isAuthenticated: false,
+            isLoginMode: false,
+            userName: '',
+            activeTab: 'home',
+            carimbos: []
+        };
+        let scannerTimeout;
+
+        // BASE DE DADOS MOCK
+        const ROTAS = [
+            { id: 'maos', nome: 'Rota das Mãos', descricao: 'Ateliês de cerâmica, tecelagem e marcenaria.', icone: 'hammer', cor: 'bg-amber-700', locais: [{ nome: 'Ateliê Barro Vivo', tipo: 'Destaque' }, { nome: 'Tecelagem Fios', tipo: 'Apoio' }] },
+            { id: 'sabores', nome: 'Rota dos Sabores', descricao: 'Gastronomia afetiva e cafés escondidos.', icone: 'coffee', cor: 'bg-orange-600', locais: [{ nome: 'Café Secreto', tipo: 'Destaque' }, { nome: 'Doceria Memórias', tipo: 'Apoio' }] },
+            { id: 'historias', nome: 'Rota das Histórias', descricao: 'Arquitetura e contadores de histórias.', icone: 'map-pin', cor: 'bg-stone-700', locais: [{ nome: 'Casarão dos Azulejos', tipo: 'Destaque' }] },
+            { id: 'beleza', nome: 'Rota da Beleza', descricao: 'Pontos instagramáveis e recordações.', icone: 'camera', cor: 'bg-rose-600', locais: [{ nome: 'Mirante do Pôr do Sol', tipo: 'Destaque' }] },
+            { id: 'noturna', nome: 'Rota Noturna', descricao: 'Eventos noturnos e música ao vivo.', icone: 'moon', cor: 'bg-indigo-900', locais: [{ nome: 'Bistrô Boêmio', tipo: 'Destaque' }] }
+        ];
+
+        // LÓGICA DE AUTENTICAÇÃO
+        document.getElementById('toggle-auth-btn').addEventListener('click', () => {
+            state.isLoginMode = !state.isLoginMode;
+            document.getElementById('auth-title').innerText = state.isLoginMode ? 'Bem-vindo de volta!' : 'Crie a sua conta';
+            document.getElementById('name-input-group').style.display = state.isLoginMode ? 'none' : 'block';
+            document.getElementById('auth-btn-text').innerText = state.isLoginMode ? 'Entrar' : 'Registar e Começar';
+            document.getElementById('auth-toggle-desc').innerText = state.isLoginMode ? 'Ainda não tem o passaporte?' : 'Já possui o seu passaporte?';
+            document.getElementById('toggle-auth-btn').innerText = state.isLoginMode ? 'Registe-se agora' : 'Faça login aqui';
+            document.getElementById('user-name').required = !state.isLoginMode;
+        });
+
+        document.getElementById('auth-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('user-name').value;
+            state.userName = state.isLoginMode ? 'Turista' : (nameInput || 'Turista');
+            state.isAuthenticated = true;
+           
+            document.getElementById('auth-view').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('flex');
+           
+            renderView();
+        });
+
+        // NAVEGAÇÃO
+        function navigate(tab) {
+            state.activeTab = tab;
+           
+            // Atualiza cores dos botões e estilos de navegação
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-amber-600', 'md:bg-amber-50');
+                btn.classList.add('text-stone-400');
+                btn.querySelector('div')?.classList.remove('scale-110');
+            });
+           
+            const activeBtn = document.getElementById(`nav-${tab}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-stone-400');
+                activeBtn.classList.add('text-amber-600', 'md:bg-amber-50');
+            }
+
+            renderView();
+        }
+
+        // RENDERIZAÇÃO DAS VIEWS
+        function renderView() {
+            const contentArea = document.getElementById('content-area');
+            let html = '';
+
+            if (state.activeTab === 'home') {
+                const progresso = Math.min((state.carimbos.length / 10) * 100, 100);
+               
+                let rotasHtml = ROTAS.slice(0, 3).map(rota => `
+                    <div class="min-w-[240px] bg-white rounded-3xl p-5 shadow-sm border border-stone-100 flex-shrink-0 md:h-full md:flex md:flex-col hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 ${rota.cor} text-white rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+                            <i data-lucide="${rota.icone}"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-1">${rota.nome}</h4>
+                        <p class="text-sm text-stone-500 line-clamp-2 md:line-clamp-none">${rota.descricao}</p>
+                    </div>
+                `).join('');
+
+                html = `
+                    <div class="p-6 md:px-10 space-y-8 md:space-y-12 animate-in max-w-7xl mx-auto">
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                            <div>
+                                <h2 class="text-3xl md:text-4xl font-serif text-stone-800">Olá, ${state.userName}!</h2>
+                                <p class="text-stone-500 mt-2 md:text-lg">Pronto para uma experiência autêntica hoje?</p>
+                            </div>
+                           
+                            <div onclick="navigate('passaporte')" class="bg-[#99582a] text-white rounded-3xl p-6 shadow-xl relative overflow-hidden cursor-pointer lg:w-1/3 min-w-[320px] hover:scale-[1.02] transition-transform">
+                                <div class="absolute -right-4 -top-4 w-24 h-24 bg-amber-200/20 rounded-full blur-xl"></div>
+                                <div class="relative z-10 flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-[#FAF7F2]/90 font-medium uppercase tracking-wider mb-1">O seu Passaporte</p>
+                                        <h3 class="text-2xl font-bold text-amber-200">${state.carimbos.length} Carimbos</h3>
+                                    </div>
+                                    <div class="bg-[#7a4621] p-3 rounded-2xl shadow-inner">
+                                        <i data-lucide="book" class="w-8 h-8 text-amber-200"></i>
+                                    </div>
+                                </div>
+                                <div class="mt-6">
+                                    <div class="flex justify-between text-xs text-[#FAF7F2]/90 mb-2">
+                                        <span>Progresso Rota Atual</span>
+                                        <span>${state.carimbos.length}/10 para brinde</span>
+                                    </div>
+                                    <div class="w-full bg-[#7a4621] rounded-full h-2.5 shadow-inner">
+                                        <div class="bg-amber-300 h-2.5 rounded-full transition-all duration-1000 shadow-sm" style="width: ${progresso}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-end mb-4">
+                                <h3 class="text-xl md:text-2xl font-bold font-serif text-[#99582a]">Rotas em Destaque</h3>
+                                <button onclick="navigate('rotas')" class="text-amber-600 text-sm md:text-base font-medium flex items-center hover:underline">
+                                    Ver todas <i data-lucide="chevron-right" class="w-4 h-4 md:w-5 md:h-5"></i>
+                                </button>
+                            </div>
+                            <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide md:grid md:grid-cols-3 md:gap-6 md:overflow-visible -mx-6 px-6 md:mx-0 md:px-0">
+                                ${rotasHtml}
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-100/50 rounded-3xl p-6 md:p-8 border border-amber-200 md:flex md:items-center md:justify-between gap-8">
+                            <div>
+                                <h3 class="font-bold text-amber-900 mb-2 md:text-xl">Apoie o Comércio Local 🛍️</h3>
+                                <p class="text-sm md:text-base text-amber-800/80 mb-4 md:mb-0 max-w-2xl">Visite parceiros, ganhe descontos e ajude pequenos empreendedores a crescer na nossa região.</p>
+                            </div>
+                            <button onclick="navigate('rotas')" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl text-sm md:text-base font-medium shadow-md transition-colors w-full md:w-auto whitespace-nowrap">Explorar Parceiros</button>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (state.activeTab === 'rotas') {
+                let listasHtml = ROTAS.map(rota => {
+                    let locaisHtml = rota.locais.map(local => `
+                        <li class="flex items-center gap-2 text-sm text-stone-900 font-medium bg-stone-50 p-2 rounded-lg">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-amber-600"></i>
+                            <span class="flex-1">${local.nome}</span>
+                            ${local.tipo === 'Destaque' ? `<span class="text-[10px] bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-bold shadow-sm">Recomendado</span>` : ''}
+                        </li>
+                    `).join('');
+
+                    return `
+                        <div onclick="toggleRota('${rota.id}')" class="bg-white rounded-3xl p-5 md:p-6 border border-stone-200 shadow-sm flex flex-col h-full hover:shadow-md transition-all cursor-pointer select-none group">
+                            <div class="flex gap-4 mb-2 md:mb-0">
+                                <div class="w-14 h-14 ${rota.cor} text-white rounded-2xl flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                                    <i data-lucide="${rota.icone}"></i>
+                                </div>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-bold text-lg md:text-xl group-hover:text-amber-700 transition-colors">${rota.nome}</h3>
+                                        <p class="text-sm text-stone-500 mt-1 leading-relaxed">${rota.descricao}</p>
+                                    </div>
+                                    <div id="chevron-${rota.id}" class="text-stone-400 mt-1 ml-2 transition-transform duration-300 shrink-0">
+                                        <i data-lucide="chevron-down" class="w-6 h-6"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="locais-${rota.id}" class="hidden mt-4 pt-4 border-t border-stone-100 animate-in">
+                                <p class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-3">Parceiros em Destaque</p>
+                                <ul class="space-y-2">${locaisHtml}</ul>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                html = `
+                    <div class="p-6 md:px-10 animate-in max-w-7xl mx-auto">
+                        <h2 class="text-3xl md:text-4xl font-serif text-[#99582a] mb-2">Rotas Temáticas</h2>
+                        <p class="text-stone-500 mb-8 md:text-lg">Explore os segredos da cidade através de jornadas criadas para si.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-6">${listasHtml}</div>
+                    </div>
+                `;
+            }
+            else if (state.activeTab === 'passaporte') {
+                let slotsHtml = '';
+                for (let i = 0; i < 10; i++) {
+                    const carimbo = state.carimbos[i];
+                    if (carimbo) {
+                        slotsHtml += `
+                            <div class="aspect-square rounded-full border-2 border-dashed border-[#c2aa8b] flex flex-col items-center justify-center p-2 relative bg-white/30 backdrop-blur-sm shadow-sm hover:scale-105 transition-transform">
+                                <div class="absolute inset-0 flex items-center justify-center animate-in">
+                                    <div class="w-[85%] h-[85%] border-[3px] border-amber-800/80 rounded-full flex flex-col items-center justify-center transform -rotate-12 opacity-80 bg-amber-50/50">
+                                        <span class="text-[0.45rem] md:text-[0.55rem] font-bold text-amber-900 uppercase tracking-widest text-center leading-tight">Rotas<br/>Sonhos</span>
+                                        <span class="text-[0.45rem] text-amber-900 mt-1 font-medium">${carimbo.data}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        slotsHtml += `
+                            <div class="aspect-square rounded-full border-2 border-dashed border-[#c2aa8b] flex flex-col items-center justify-center p-2 relative bg-white/20 backdrop-blur-sm">
+                                <span class="text-[#c2aa8b] font-serif text-sm opacity-50">${i + 1}</span>
+                            </div>
+                        `;
+                    }
+                }
+
+                html = `
+                    <div class="p-6 md:px-10 animate-in max-w-6xl mx-auto">
+                        <div class="text-center md:text-left mb-8">
+                            <h2 class="text-3xl md:text-4xl font-serif text-[#99582a] mb-2">Passaporte</h2>
+                            <p class="text-stone-500 text-sm md:text-lg">Os seus check-ins viram memórias e prémios.</p>
+                        </div>
+
+                        <div class="flex flex-col lg:flex-row gap-8 items-start">
+                            <div class="bg-[#ebdabe] p-5 md:p-8 rounded-2xl shadow-inner border-[3px] border-[#d4c1a5] relative mb-8 md:mb-0 flex-1 w-full">
+                                <div class="absolute inset-0 opacity-[0.15] pointer-events-none rounded-xl" style="background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png')"></div>
+                                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 md:gap-6 relative z-10">${slotsHtml}</div>
+                            </div>
+                           
+                            <div class="bg-white p-6 md:p-8 rounded-3xl border border-stone-200 shadow-sm text-center lg:w-[320px] shrink-0 w-full">
+                                <div class="w-20 h-20 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                                    <i data-lucide="qr-code" class="w-10 h-10 text-stone-500"></i>
+                                </div>
+                                <h3 class="font-bold text-xl mb-3 text-[#99582a]">Como conseguir carimbos?</h3>
+                                <p class="text-sm text-stone-500 mb-8 leading-relaxed">Visite estabelecimentos parceiros, compre ou consuma, e escaneie o QR Code no local para validar o seu check-in.</p>
+                                <button onclick="simularCheckIn()" class="bg-[#99582a] hover:bg-[#7a4621] text-white w-full py-4 rounded-xl font-medium shadow-lg active:scale-95 transition-all text-sm uppercase tracking-wider">Ler QR Code Agora</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (state.activeTab === 'recompensas') {
+                const recompensas = [
+                    { pontos: 3, titulo: 'Cartão Postal Histórico', desc: 'Retire no centro de atendimento.', icone: '💌' },
+                    { pontos: 5, titulo: 'Miniatura de Cerâmica', desc: 'Peça exclusiva da Rota das Mãos.', icone: '🏺' },
+                    { pontos: 8, titulo: 'Café Grátis', desc: 'Voucher em qualquer cafeteria parceira.', icone: '☕' },
+                    { pontos: 10, titulo: 'Desconto em Pernoite', desc: 'Ganhe 20% off numa diária extra.', icone: '🛏️' }
+                ];
+
+                let recHtml = recompensas.map(rec => {
+                    const unlocked = state.carimbos.length >= rec.pontos;
+                    return `
+                        <div class="p-5 md:p-6 rounded-2xl border flex items-center gap-4 md:gap-6 transition-all ${unlocked ? 'bg-white border-green-200 shadow-md transform hover:-translate-y-1' : 'bg-stone-50/50 border-stone-200 opacity-70'}">
+                            <div class="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-2xl md:text-3xl shrink-0 ${unlocked ? 'bg-green-100 shadow-inner' : 'bg-stone-200 grayscale'}">${rec.icone}</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1 md:mb-2">
+                                    <h4 class="font-bold md:text-lg ${unlocked ? 'text-stone-800' : 'text-stone-500'}">${rec.titulo}</h4>
+                                    <span class="text-xs md:text-sm font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-md shrink-0 ml-2 ${unlocked ? 'bg-green-100 text-green-700' : 'bg-stone-200 text-stone-500'}">${rec.pontos} 🎯</span>
+                                </div>
+                                <p class="text-xs md:text-sm text-stone-500 leading-relaxed">${rec.desc}</p>
+                                ${unlocked ? `<button class="mt-3 text-xs md:text-sm font-bold text-green-700 hover:underline">Resgatar Prémio</button>` : `<p class="mt-2 text-xs text-stone-400 font-medium">Faltam ${rec.pontos - state.carimbos.length} carimbos</p>`}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                html = `
+                    <div class="p-6 md:px-10 animate-in max-w-5xl mx-auto">
+                        <h2 class="text-3xl md:text-4xl font-serif text-[#99582a] mb-2">Recompensas</h2>
+                        <p class="text-stone-500 mb-8 md:text-lg">Troque os seus carimbos por brindes locais.</p>
+                       
+                        <div class="bg-amber-100 rounded-3xl p-8 mb-10 text-center border border-amber-200 md:max-w-md md:mx-auto shadow-sm">
+                            <p class="text-amber-800 font-medium mb-1 md:text-lg">Você possui</p>
+                            <h3 class="text-5xl md:text-6xl font-black text-amber-600 font-serif mb-3">${state.carimbos.length}</h3>
+                            <p class="text-sm md:text-base text-amber-800/80 uppercase tracking-wider font-bold">Carimbos Validados</p>
+                        </div>
+                       
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">${recHtml}</div>
+                    </div>
+                `;
+            }
+
+            contentArea.innerHTML = html;
+           
+            // Recria os ícones inseridos dinamicamente no HTML
+            lucide.createIcons();
+            atualizarBadge();
+        }
+
+        // FUNÇÃO PARA EXPANDIR/RECOLHER ROTAS
+        function toggleRota(id) {
+            const locaisDiv = document.getElementById(`locais-${id}`);
+            const chevron = document.getElementById(`chevron-${id}`);
+            
+            if (locaisDiv.classList.contains('hidden')) {
+                locaisDiv.classList.remove('hidden');
+                chevron.classList.add('rotate-180');
+            } else {
+                locaisDiv.classList.add('hidden');
+                chevron.classList.remove('rotate-180');
+            }
+        }
+
+        // SIMULAÇÃO DE CHECK-IN E NOTIFICAÇÃO
+        function simularCheckIn() {
+            if(!state.isAuthenticated) return;
+           
+            const scanner = document.getElementById('scanner-overlay');
+            scanner.classList.remove('hidden');
+
+            scannerTimeout = setTimeout(() => {
+                scanner.classList.add('hidden');
+                
+                // Simula adicionar carimbo
+                if(state.carimbos.length < 10) {
+                    const dataAtual = new Date().toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: '2-digit' });
+                    state.carimbos.push({ data: dataAtual });
+                    mostrarToast("Carimbo validado com sucesso!");
+                    renderView();
+                } else {
+                    mostrarToast("O seu passaporte já está cheio!");
+                }
+            }, 2000); // 2 segundos simulando a leitura
+        }
+        
+        function fecharScanner() {
+            clearTimeout(scannerTimeout);
+            document.getElementById('scanner-overlay').classList.add('hidden');
+        }
+
+        function mostrarToast(mensagem) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = mensagem;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000); // Oculta a mensagem após 3 segundos
+        }
+
+        function atualizarBadge() {
+            const badge = document.getElementById('badge-count');
+            if (state.carimbos.length > 0) {
+                badge.innerText = state.carimbos.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+        
+        // Inicializa os ícones na primeira carga para a Tela de Autenticação
+        lucide.createIcons();
+    </script>
+</body>
+</html>
